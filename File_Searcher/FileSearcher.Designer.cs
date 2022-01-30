@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileSearcher));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.TemplateDownloadBtn = new System.Windows.Forms.Button();
+            this.SearchBtn = new System.Windows.Forms.Button();
             this.FileUploadBtn = new System.Windows.Forms.Button();
             this.DestinationFolderBtn = new System.Windows.Forms.Button();
             this.SourceFolderBtn = new System.Windows.Forms.Button();
@@ -43,7 +45,6 @@
             this.folderBrowserDialog2 = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.SearchBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
@@ -80,6 +81,16 @@
             this.TemplateDownloadBtn.Text = "Template";
             this.TemplateDownloadBtn.UseVisualStyleBackColor = true;
             this.TemplateDownloadBtn.Click += new System.EventHandler(this.TemplateDownloadBtn_Click);
+            // 
+            // SearchBtn
+            // 
+            this.SearchBtn.Location = new System.Drawing.Point(13, 121);
+            this.SearchBtn.Name = "SearchBtn";
+            this.SearchBtn.Size = new System.Drawing.Size(67, 23);
+            this.SearchBtn.TabIndex = 2;
+            this.SearchBtn.Text = "Search";
+            this.SearchBtn.UseVisualStyleBackColor = true;
+            this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
             // FileUploadBtn
             // 
@@ -170,16 +181,6 @@
             this.saveFileDialog1.Filter = "Excel 97-2003 (*.xls)|*.xls";
             this.saveFileDialog1.FilterIndex = 2;
             // 
-            // SearchBtn
-            // 
-            this.SearchBtn.Location = new System.Drawing.Point(13, 121);
-            this.SearchBtn.Name = "SearchBtn";
-            this.SearchBtn.Size = new System.Drawing.Size(67, 23);
-            this.SearchBtn.TabIndex = 2;
-            this.SearchBtn.Text = "Search";
-            this.SearchBtn.UseVisualStyleBackColor = true;
-            this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.dataGridView);
@@ -207,6 +208,7 @@
             this.ClientSize = new System.Drawing.Size(909, 514);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FileSearcher";
             this.Text = "File Searcher";
             this.groupBox1.ResumeLayout(false);
