@@ -47,6 +47,9 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -65,6 +68,9 @@
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Location = new System.Drawing.Point(12, 24);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(885, 150);
@@ -74,7 +80,7 @@
             // 
             // TemplateDownloadBtn
             // 
-            this.TemplateDownloadBtn.Location = new System.Drawing.Point(797, 78);
+            this.TemplateDownloadBtn.Location = new System.Drawing.Point(813, 77);
             this.TemplateDownloadBtn.Name = "TemplateDownloadBtn";
             this.TemplateDownloadBtn.Size = new System.Drawing.Size(67, 23);
             this.TemplateDownloadBtn.TabIndex = 2;
@@ -94,7 +100,7 @@
             // 
             // FileUploadBtn
             // 
-            this.FileUploadBtn.Location = new System.Drawing.Point(725, 78);
+            this.FileUploadBtn.Location = new System.Drawing.Point(741, 77);
             this.FileUploadBtn.Name = "FileUploadBtn";
             this.FileUploadBtn.Size = new System.Drawing.Size(67, 23);
             this.FileUploadBtn.TabIndex = 2;
@@ -104,7 +110,7 @@
             // 
             // DestinationFolderBtn
             // 
-            this.DestinationFolderBtn.Location = new System.Drawing.Point(725, 52);
+            this.DestinationFolderBtn.Location = new System.Drawing.Point(741, 51);
             this.DestinationFolderBtn.Name = "DestinationFolderBtn";
             this.DestinationFolderBtn.Size = new System.Drawing.Size(67, 23);
             this.DestinationFolderBtn.TabIndex = 2;
@@ -114,7 +120,7 @@
             // 
             // SourceFolderBtn
             // 
-            this.SourceFolderBtn.Location = new System.Drawing.Point(725, 29);
+            this.SourceFolderBtn.Location = new System.Drawing.Point(741, 28);
             this.SourceFolderBtn.Name = "SourceFolderBtn";
             this.SourceFolderBtn.Size = new System.Drawing.Size(67, 23);
             this.SourceFolderBtn.TabIndex = 2;
@@ -126,21 +132,22 @@
             // 
             this.FileUploadTxtBox.Location = new System.Drawing.Point(117, 80);
             this.FileUploadTxtBox.Name = "FileUploadTxtBox";
-            this.FileUploadTxtBox.Size = new System.Drawing.Size(602, 20);
+            this.FileUploadTxtBox.Size = new System.Drawing.Size(601, 20);
             this.FileUploadTxtBox.TabIndex = 1;
+            this.FileUploadTxtBox.TextChanged += new System.EventHandler(this.FileUploadTxtBox_TextChanged);
             // 
             // DestinationFolderTxtBox
             // 
             this.DestinationFolderTxtBox.Location = new System.Drawing.Point(117, 54);
             this.DestinationFolderTxtBox.Name = "DestinationFolderTxtBox";
-            this.DestinationFolderTxtBox.Size = new System.Drawing.Size(602, 20);
+            this.DestinationFolderTxtBox.Size = new System.Drawing.Size(601, 20);
             this.DestinationFolderTxtBox.TabIndex = 1;
             // 
             // SourceFolderTxtBox
             // 
             this.SourceFolderTxtBox.Location = new System.Drawing.Point(117, 31);
             this.SourceFolderTxtBox.Name = "SourceFolderTxtBox";
-            this.SourceFolderTxtBox.Size = new System.Drawing.Size(602, 20);
+            this.SourceFolderTxtBox.Size = new System.Drawing.Size(601, 20);
             this.SourceFolderTxtBox.TabIndex = 1;
             // 
             // label4
@@ -196,10 +203,44 @@
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Location = new System.Drawing.Point(13, 19);
+            this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView.Location = new System.Drawing.Point(3, 16);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(866, 281);
+            this.dataGridView.Size = new System.Drawing.Size(879, 287);
             this.dataGridView.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.DarkRed;
+            this.label3.Location = new System.Drawing.Point(714, 29);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(21, 25);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "*";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.DarkRed;
+            this.label5.Location = new System.Drawing.Point(714, 54);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(21, 25);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "*";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.DarkRed;
+            this.label6.Location = new System.Drawing.Point(714, 79);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(21, 25);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "*";
             // 
             // FileSearcher
             // 
@@ -239,6 +280,9 @@
         private System.Windows.Forms.Button SearchBtn;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
     }
 }
 

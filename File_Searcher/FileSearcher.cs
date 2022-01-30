@@ -9,6 +9,7 @@ namespace File_Searcher
 {
     public partial class FileSearcher : Form
     {
+        List<string> _fileNames = new List<string>();
         public FileSearcher()
         {
             InitializeComponent();
@@ -39,7 +40,37 @@ namespace File_Searcher
                 FileUploadTxtBox.Text = openFileDialog1.FileName;
             }
         }
+        private void FileUploadTxtBox_TextChanged(object sender, EventArgs e)
+        {
+            var filePath = FileUploadTxtBox.Text;
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    string extension = Path.GetExtension(filePath);
+                    if (extension.ToLower().Equals(".xls") || extension.ToLower().Equals(".xlsx"))
+                    {
+                        var dt = ReadExcel(filePath, extension);
 
+                        dataGridView.DataSource = dt;
+                        _fileNames = ToList(dt);
+                    }
+                    else
+                    {
+                        ShowMessage("No Excel file found.");
+                    }
+                }
+                else
+                {
+                    ShowMessage("No file exist in your selected location");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+
+        }
         private void TemplateDownloadBtn_Click(object sender, EventArgs e)
         {
             try
@@ -77,53 +108,47 @@ namespace File_Searcher
         }
         private void SearchBtn_Click(object sender, EventArgs e)
         {
+
             List<FileInfo> fileInfos = new List<FileInfo>();
-            string sourcePath = @"C:\Users\Yeasin\Downloads\FileSearcher";
-            string destinationPath = @"C:\Users\Yeasin\Downloads\Destination";
-            string filePath = @"C:\Users\Yeasin\Downloads\FileSearcher\test.xls";
+            //string sourcePath = @"C:\Users\Yeasin\Downloads\FileSearcher";
+            //string destinationPath = @"C:\Users\Yeasin\Downloads\Destination";
+            //string filePath = @"C:\Users\Yeasin\Downloads\FileSearcher\test.xls";
 
-            //string sourcePath = SourceFolderTxtBox.Text;
-            //string destinationPath = DestinationFolderTxtBox.Text;
-            //string filePath = FileUploadTxtBox.Text;
+            string sourcePath = SourceFolderTxtBox.Text;
+            string destinationPath = DestinationFolderTxtBox.Text;
+            string filePath = FileUploadTxtBox.Text;
 
-            if (destinationPath.Contains(sourcePath))
+            if (!IsValid(sourcePath, destinationPath, filePath))
             {
-                ShowMessage("Destination Path can not be the part of source path");
                 return;
             }
-            if (File.Exists(filePath))
+
+
+            foreach (var fileName in _fileNames)
             {
-                string extension = Path.GetExtension(filePath);
-                if (extension.ToLower().Equals(".xls") || extension.ToLower().Equals(".xlsx"))
+                var fileInfo = Search(sourcePath, fileName);
+                string destinationFullPath = destinationPath + "\\" + fileInfo.FileName;
+                if (File.Exists(destinationFullPath))
                 {
-                    var dt = ReadExcel(filePath, extension);
-                    List<string> names = ToList(dt);
-                    foreach (var fileName in names)
+                    DateTime lastModifyDate = new DirectoryInfo(destinationFullPath).LastWriteTime;
+                    if (lastModifyDate > fileInfo.LastModified)
                     {
-                        var fileInfo = Search(sourcePath, fileName);
-                        string destinationFullPath = destinationPath + "\\" + fileInfo.FileName;
-                        if (File.Exists(destinationFullPath))
-                        {
-                            DateTime lastModifyDate = new DirectoryInfo(destinationFullPath).LastWriteTime;
-                            if (lastModifyDate > fileInfo.LastModified)
-                            {
-                                fileInfo.FilePath = destinationFullPath;
-                                fileInfo.LastModified = new DirectoryInfo(destinationFullPath).LastWriteTime;
-                            }
-                            else
-                            {
-                                File.Copy(fileInfo.FilePath, destinationFullPath,true);
-                            }
-                            
-                        }
-                        else
-                        {
-                            File.Copy(fileInfo.FilePath, destinationFullPath);
-                        }
-                        
-                        fileInfos.Add(fileInfo);
+                        fileInfo.FilePath = destinationFullPath;
+                        fileInfo.LastModified = new DirectoryInfo(destinationFullPath).LastWriteTime;
                     }
+                    else
+                    {
+                        File.Copy(fileInfo.FilePath, destinationFullPath, true);
+                    }
+
                 }
+                else
+                {
+                    File.Copy(fileInfo.FilePath, destinationFullPath);
+                }
+
+                fileInfos.Add(fileInfo);
+
                 dataGridView.DataSource = fileInfos;
                 ShowMessage("Successfully Copied");
             }
@@ -168,7 +193,7 @@ namespace File_Searcher
         public List<FileInfo> Debug(string basePath, string fileName)
         {
             List<FileInfo> fileInfos = new List<FileInfo>();
-            var files = Directory.EnumerateFiles(basePath, fileName, SearchOption.AllDirectories); 
+            var files = Directory.EnumerateFiles(basePath, fileName, SearchOption.AllDirectories);
             foreach (string file in files)
             {
                 fileInfos.Add(new FileInfo() { FileName = fileName, FilePath = file, LastModified = new DirectoryInfo(file).LastWriteTime });
@@ -200,5 +225,33 @@ namespace File_Searcher
             public string FilePath { get; set; }
             public DateTime LastModified { get; set; }
         }
+
+        public bool IsValid(string sourcePath, string destinationPath, string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(sourcePath))
+            {
+                ShowMessage("Source Path can not be empty");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(destinationPath))
+            {
+                ShowMessage("Destination Path can not be empty");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                ShowMessage("A excel file with proper template should be selected for search");
+                return false;
+            }
+            if (destinationPath.Contains(sourcePath))
+            {
+                ShowMessage("Destination Path can not be the part of source path");
+                return false;
+            }
+
+            return true;
+        }
+
+        
     }
 }
