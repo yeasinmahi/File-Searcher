@@ -79,12 +79,18 @@ namespace File_Searcher
         {
             List<FileInfo> fileInfos = new List<FileInfo>();
             string sourcePath = @"C:\Users\Yeasin\Downloads\FileSearcher";
-            string destinationPath = @"C:\Users\Yeasin\Downloads\FileSearcher\Destination";
+            string destinationPath = @"C:\Users\Yeasin\Downloads\Destination";
             string filePath = @"C:\Users\Yeasin\Downloads\FileSearcher\test.xls";
 
             //string sourcePath = SourceFolderTxtBox.Text;
             //string destinationPath = DestinationFolderTxtBox.Text;
             //string filePath = FileUploadTxtBox.Text;
+
+            if (destinationPath.Contains(sourcePath))
+            {
+                ShowMessage("Destination Path can not be the part of source path");
+                return;
+            }
             if (File.Exists(filePath))
             {
                 string extension = Path.GetExtension(filePath);
@@ -106,7 +112,7 @@ namespace File_Searcher
                             }
                             else
                             {
-                                File.Copy(fileInfo.FilePath, destinationFullPath, true);
+                                File.Copy(fileInfo.FilePath, destinationFullPath,true);
                             }
                             
                         }
