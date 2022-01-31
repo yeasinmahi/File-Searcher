@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.OleDb;
+using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Windows.Forms;
 
@@ -9,10 +9,15 @@ namespace File_Searcher
 {
     public partial class FileSearcher : Form
     {
-        List<string> _fileNames = new List<string>();
+        private List<string> _fileNames = new List<string>();
+        private readonly List<FileSearchHelper.FileInfo> _fileInfos = new List<FileSearchHelper.FileInfo>();
+        private readonly FileSearchHelper _helper = new FileSearchHelper();
         public FileSearcher()
         {
             InitializeComponent();
+            SourceFolderTxtBox.Text= ConfigurationManager.AppSettings["sourcePath"];
+            DestinationFolderTxtBox.Text= ConfigurationManager.AppSettings["destinationPath"];
+            FileUploadTxtBox.Text= ConfigurationManager.AppSettings["filePath"];
         }
         public void ShowMessage(string message)
         {
@@ -50,10 +55,10 @@ namespace File_Searcher
                     string extension = Path.GetExtension(filePath);
                     if (extension.ToLower().Equals(".xls") || extension.ToLower().Equals(".xlsx"))
                     {
-                        var dt = ReadExcel(filePath, extension);
+                        var dt = _helper.ReadExcel(filePath, extension);
 
                         dataGridView.DataSource = dt;
-                        _fileNames = ToList(dt);
+                        _fileNames = _helper.ToList(dt);
                     }
                     else
                     {
@@ -108,124 +113,13 @@ namespace File_Searcher
         }
         private void SearchBtn_Click(object sender, EventArgs e)
         {
-
-            List<FileInfo> fileInfos = new List<FileInfo>();
-            //string sourcePath = @"C:\Users\Yeasin\Downloads\FileSearcher";
-            //string destinationPath = @"C:\Users\Yeasin\Downloads\Destination";
-            //string filePath = @"C:\Users\Yeasin\Downloads\FileSearcher\test.xls";
-
-            string sourcePath = SourceFolderTxtBox.Text;
-            string destinationPath = DestinationFolderTxtBox.Text;
-            string filePath = FileUploadTxtBox.Text;
-
-            if (!IsValid(sourcePath, destinationPath, filePath))
-            {
-                return;
-            }
-
-
-            foreach (var fileName in _fileNames)
-            {
-                var fileInfo = Search(sourcePath, fileName);
-                string destinationFullPath = destinationPath + "\\" + fileInfo.FileName;
-                if (File.Exists(destinationFullPath))
-                {
-                    DateTime lastModifyDate = new DirectoryInfo(destinationFullPath).LastWriteTime;
-                    if (lastModifyDate > fileInfo.LastModified)
-                    {
-                        fileInfo.FilePath = destinationFullPath;
-                        fileInfo.LastModified = new DirectoryInfo(destinationFullPath).LastWriteTime;
-                    }
-                    else
-                    {
-                        File.Copy(fileInfo.FilePath, destinationFullPath, true);
-                    }
-
-                }
-                else
-                {
-                    File.Copy(fileInfo.FilePath, destinationFullPath);
-                }
-
-                fileInfos.Add(fileInfo);
-
-                dataGridView.DataSource = fileInfos;
-                ShowMessage("Successfully Copied");
-            }
+            progressBar1.Maximum = 100;
+            progressBar1.Step = 1;
+            progressBar1.Value = 0;
+            backgroundWorker.RunWorkerAsync();
+            
+            
         }
-        public DataTable ReadExcel(string fileName, string fileExt)
-        {
-            string conn;
-            DataTable dtexcel = new DataTable();
-            if (string.Compare(fileExt, ".xls", StringComparison.Ordinal) == 0)
-                conn = @"provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + ";Extended Properties='Excel 8.0;HRD=Yes;IMEX=1';"; //for below excel 2007  
-            else
-                conn = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileName + ";Extended Properties='Excel 12.0;HDR=NO';"; //for above excel 2007  
-            using (OleDbConnection con = new OleDbConnection(conn))
-            {
-                try
-                {
-                    OleDbDataAdapter
-                        oleAdpt = new OleDbDataAdapter("select * from [Sheet1$]",
-                            con); //here we read data from sheet1  
-                    oleAdpt.Fill(dtexcel); //fill excel data into dataTable  
-                }
-                catch (Exception ex)
-                {
-                    ShowMessage(ex.Message);
-                }
-            }
-            return dtexcel;
-        }
-
-        public List<string> ToList(DataTable dt)
-        {
-            var fileNames = new List<string>();
-            foreach (DataRow row in dt.Rows)
-            {
-                string name = row.ItemArray[0].ToString();
-                if (!string.IsNullOrWhiteSpace(name))
-                    fileNames.Add(name + ".pdf");
-            }
-            return fileNames;
-        }
-
-        public List<FileInfo> Debug(string basePath, string fileName)
-        {
-            List<FileInfo> fileInfos = new List<FileInfo>();
-            var files = Directory.EnumerateFiles(basePath, fileName, SearchOption.AllDirectories);
-            foreach (string file in files)
-            {
-                fileInfos.Add(new FileInfo() { FileName = fileName, FilePath = file, LastModified = new DirectoryInfo(file).LastWriteTime });
-            }
-
-            return fileInfos;
-        }
-
-        public FileInfo Search(string basePath, string fileName)
-        {
-            var files = Directory.EnumerateFiles(basePath, fileName, SearchOption.AllDirectories);
-            DateTime lastModifiedDate = DateTime.MinValue;
-            string lastModifiedFileName = String.Empty;
-            foreach (string file in files)
-            {
-                DateTime fileDate = new DirectoryInfo(file).LastWriteTime;
-                if (lastModifiedDate < fileDate)
-                {
-                    lastModifiedDate = fileDate;
-                    lastModifiedFileName = file;
-                }
-            }
-
-            return new FileInfo() { FileName = fileName, FilePath = lastModifiedFileName, LastModified = lastModifiedDate };
-        }
-        public class FileInfo
-        {
-            public string FileName { get; set; }
-            public string FilePath { get; set; }
-            public DateTime LastModified { get; set; }
-        }
-
         public bool IsValid(string sourcePath, string destinationPath, string filePath)
         {
             if (string.IsNullOrWhiteSpace(sourcePath))
@@ -251,7 +145,108 @@ namespace File_Searcher
 
             return true;
         }
+        private void DownloadBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_fileInfos.Count > 0)
+                {
+                    var path = DestinationFolderTxtBox.Text;
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        _ = _helper.WriteFile(path, _helper.ToLog(_fileInfos));
+                        ShowMessage("File downloaded successfully");
+                    }
+                    else
+                    {
+                        ShowMessage("No destination path selected to download");
+                    }
+                }
+                else
+                {
+                    ShowMessage("No log found to download.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            
+        }
 
-        
+        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var worker = sender as BackgroundWorker;
+           
+            try
+            {
+                string sourcePath = SourceFolderTxtBox.Text;
+                string destinationPath = DestinationFolderTxtBox.Text;
+                string filePath = FileUploadTxtBox.Text;
+                _fileInfos.Clear();
+                if (!IsValid(sourcePath, destinationPath, filePath))
+                {
+                    return;
+                }
+
+                int counter = 0;
+                
+                foreach (var fileName in _fileNames)
+                {
+                    var fileInfo = _helper.Search(sourcePath, fileName);
+                    if (fileInfo.Status.Equals("Success"))
+                    {
+                        string destinationFullPath = destinationPath + "\\" + fileInfo.FileName;
+                        if (File.Exists(destinationFullPath))
+                        {
+                            //DateTime lastModifyDate = new DirectoryInfo(destinationFullPath).LastWriteTime;
+                            //if (lastModifyDate > fileInfo.LastModified)
+                            //{
+                            //    fileInfo.FilePath = destinationFullPath;
+                            //    fileInfo.LastModified = new DirectoryInfo(destinationFullPath).LastWriteTime;
+                            //}
+                            //else
+                            //{
+                            //    File.Copy(fileInfo.FilePath, destinationFullPath, true);
+                            //}
+                            fileInfo.Status = "File Exist";
+                        }
+                        else
+                        {
+                            File.Copy(fileInfo.FilePath, destinationFullPath);
+                        }
+
+
+                    }
+                    else
+                    {
+
+                    }
+
+                    _fileInfos.Add(fileInfo);
+                    counter++;
+                    worker.ReportProgress(counter * 100 / _fileNames.Count);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+        }
+
+        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            dataGridView.DataSource = _fileInfos;
+            if (_fileInfos.Count > 0)
+            {
+                ShowMessage("File search completed");
+            }
+        }
     }
 }
