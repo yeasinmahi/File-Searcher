@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Threading.Tasks;
 
 namespace File_Searcher
@@ -47,10 +48,40 @@ namespace File_Searcher
             }
             return dtexcel;
         }
+        private List<string> GetFiles(string path, string pattern)
+        {
+            var files = new List<string>();
+            var directories = new string[] { };
+
+            try
+            {
+                files.AddRange(Directory.GetFiles(path, pattern, SearchOption.TopDirectoryOnly));
+                directories = Directory.GetDirectories(path);
+            }
+            catch (UnauthorizedAccessException) { }
+
+            foreach (var directory in directories)
+                try
+                {
+                    files.AddRange(GetFiles(directory, pattern));
+                }
+                catch (UnauthorizedAccessException) { }
+
+            return files;
+        }
         public FileInfo Search(string basePath, string fileName)
         {
-            var files = Directory.EnumerateFiles(basePath, fileName, SearchOption.AllDirectories);
-            if (files.Any())
+            IEnumerable<string> files = null;
+            try
+            {
+                files = GetFiles(basePath, fileName);
+            }
+            catch
+            {
+
+            }
+
+            if (files != null && files.Any())
             {
                 DateTime lastModifiedDate = DateTime.MinValue;
                 string lastModifiedFileName = String.Empty;
@@ -91,26 +122,25 @@ namespace File_Searcher
                 var fullpath = Path.Combine(basePath, fileName);
                 FileStream file;
                 StreamWriter sw;
-                if (!File.Exists(fullpath))
+                if (File.Exists(fullpath)) File.Delete(fullpath);
+                if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
+                try
                 {
-                    if (!Directory.Exists(basePath)) Directory.CreateDirectory(basePath);
-                    try
-                    {
-                        file = new FileStream(fullpath, FileMode.CreateNew, FileAccess.Write,
-                            FileShare.Read);
-                        sw = new StreamWriter(file);
+                    file = new FileStream(fullpath, FileMode.CreateNew, FileAccess.Write,
+                        FileShare.Read);
+                    sw = new StreamWriter(file);
 
-                        await sw.WriteLineAsync("FileName \t\tLastModifiedTime \t\tStatus \t\tFilePath");
-                        await sw.WriteLineAsync(
-                            "=====================================================================================================");
-                        sw.Close();
-                        file.Close();
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
+                    await sw.WriteLineAsync("FileName \t\tLastModifiedTime \t\tStatus \t\tFilePath");
+                    await sw.WriteLineAsync(
+                        "=====================================================================================================");
+                    sw.Close();
+                    file.Close();
                 }
+                catch (Exception)
+                {
+                    // ignored
+                }
+
 
                 try
                 {

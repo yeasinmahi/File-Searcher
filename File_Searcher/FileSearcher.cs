@@ -113,10 +113,16 @@ namespace File_Searcher
         }
         private void SearchBtn_Click(object sender, EventArgs e)
         {
-            progressBar1.Maximum = 100;
-            progressBar1.Step = 1;
-            progressBar1.Value = 0;
-            backgroundWorker.RunWorkerAsync();
+            try
+            {
+                dataGridView.DataSource = null;
+                backgroundWorker.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            
             
             
         }
@@ -193,6 +199,11 @@ namespace File_Searcher
                 
                 foreach (var fileName in _fileNames)
                 {
+                    if (worker?.CancellationPending == true)
+                    {
+                        e.Cancel = true;
+                        break;
+                    }
                     var fileInfo = _helper.Search(sourcePath, fileName);
                     if (fileInfo.Status.Equals("Success"))
                     {
@@ -225,7 +236,7 @@ namespace File_Searcher
 
                     _fileInfos.Add(fileInfo);
                     counter++;
-                    worker.ReportProgress(counter * 100 / _fileNames.Count);
+                    worker?.ReportProgress(counter * 1000 / _fileNames.Count);
                 }
                 
             }
@@ -238,6 +249,9 @@ namespace File_Searcher
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
+            //dataGridView.DataSource = _fileInfos;
+            //dataGridView.Update();
+            //dataGridView.Refresh();
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -247,6 +261,11 @@ namespace File_Searcher
             {
                 ShowMessage("File search completed");
             }
+        }
+
+        private void StopBtn_Click(object sender, EventArgs e)
+        {
+            backgroundWorker.CancelAsync();
         }
     }
 }

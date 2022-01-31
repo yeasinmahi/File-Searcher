@@ -53,6 +53,7 @@
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.DownloadBtn = new System.Windows.Forms.Button();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.StopBtn = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -60,6 +61,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.StopBtn);
             this.groupBox1.Controls.Add(this.progressBar1);
             this.groupBox1.Controls.Add(this.TemplateDownloadBtn);
             this.groupBox1.Controls.Add(this.SearchBtn);
@@ -85,8 +87,10 @@
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(117, 120);
+            this.progressBar1.Maximum = 1000;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(601, 23);
+            this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 4;
             // 
             // TemplateDownloadBtn
@@ -266,9 +270,20 @@
             // backgroundWorker
             // 
             this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
+            // 
+            // StopBtn
+            // 
+            this.StopBtn.Location = new System.Drawing.Point(741, 119);
+            this.StopBtn.Name = "StopBtn";
+            this.StopBtn.Size = new System.Drawing.Size(75, 23);
+            this.StopBtn.TabIndex = 5;
+            this.StopBtn.Text = "Stop";
+            this.StopBtn.UseVisualStyleBackColor = true;
+            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
             // 
             // FileSearcher
             // 
@@ -315,6 +330,7 @@
         private System.Windows.Forms.Button DownloadBtn;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.Button StopBtn;
     }
 }
 
