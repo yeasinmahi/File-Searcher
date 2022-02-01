@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Threading.Tasks;
 
 namespace File_Searcher

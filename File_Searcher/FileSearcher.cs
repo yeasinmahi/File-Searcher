@@ -274,7 +274,7 @@ namespace File_Searcher
             
             _watch.Stop();
             endTimelbl.Text = DateTime.Now.ToLongTimeString();
-            ElapsedTimeLbl.Text = _watch.Elapsed.Seconds+" Seconds";
+            ElapsedTimeLbl.Text = _watch.Elapsed.Seconds+@" Seconds";
 
             if (_fileInfos.Count > 0)
             {
