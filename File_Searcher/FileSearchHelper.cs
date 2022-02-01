@@ -17,6 +17,7 @@ namespace File_Searcher
             public string FilePath { get; set; }
             public DateTime LastModified { get; set; }
             public string Status { get; set; }
+            public TimeSpan TimeTaken { get; set; }
         }
         public List<FileInfo> Debug(string basePath, string fileName)
         {
@@ -78,7 +79,7 @@ namespace File_Searcher
             }
             catch
             {
-
+                // ignored
             }
 
             if (files != null && files.Any())
@@ -130,7 +131,7 @@ namespace File_Searcher
                         FileShare.Read);
                     sw = new StreamWriter(file);
 
-                    await sw.WriteLineAsync("FileName \t\tLastModifiedTime \t\tStatus \t\tFilePath");
+                    await sw.WriteLineAsync("FileName \t\tLastModifiedTime \t\tStatus \t\tTimeTaken \t\tFilePath ");
                     await sw.WriteLineAsync(
                         "=====================================================================================================");
                     sw.Close();
@@ -167,7 +168,7 @@ namespace File_Searcher
             var message = string.Empty;
             foreach (var fileInfo in fileInfos)
             {
-                message += $"{fileInfo.FileName} {fileInfo.LastModified} {fileInfo.Status} {fileInfo.FilePath} \n";
+                message += $"{fileInfo.FileName} {fileInfo.LastModified} {fileInfo.Status} {fileInfo.TimeTaken.TotalMilliseconds} {fileInfo.FilePath}\n";
             }
             return message;
         }

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileSearcher));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.StopBtn = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.TemplateDownloadBtn = new System.Windows.Forms.Button();
             this.SearchBtn = new System.Windows.Forms.Button();
@@ -53,7 +54,13 @@
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.DownloadBtn = new System.Windows.Forms.Button();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.StopBtn = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.startTimelbl = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.endTimelbl = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.ElapsedTimeLbl = new System.Windows.Forms.Label();
+            this.folderBrowserDialog3 = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -84,6 +91,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search Criteria";
             // 
+            // StopBtn
+            // 
+            this.StopBtn.Location = new System.Drawing.Point(741, 119);
+            this.StopBtn.Name = "StopBtn";
+            this.StopBtn.Size = new System.Drawing.Size(67, 23);
+            this.StopBtn.TabIndex = 5;
+            this.StopBtn.Text = "Stop";
+            this.StopBtn.UseVisualStyleBackColor = true;
+            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
+            // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(117, 120);
@@ -109,7 +126,7 @@
             this.SearchBtn.Name = "SearchBtn";
             this.SearchBtn.Size = new System.Drawing.Size(67, 23);
             this.SearchBtn.TabIndex = 2;
-            this.SearchBtn.Text = "Search";
+            this.SearchBtn.Text = "Copy";
             this.SearchBtn.UseVisualStyleBackColor = true;
             this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
@@ -239,7 +256,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.dataGridView);
-            this.groupBox2.Location = new System.Drawing.Point(12, 196);
+            this.groupBox2.Location = new System.Drawing.Point(12, 180);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(885, 306);
             this.groupBox2.TabIndex = 1;
@@ -259,9 +276,9 @@
             // 
             // DownloadBtn
             // 
-            this.DownloadBtn.Location = new System.Drawing.Point(825, 180);
+            this.DownloadBtn.Location = new System.Drawing.Point(753, 489);
             this.DownloadBtn.Name = "DownloadBtn";
-            this.DownloadBtn.Size = new System.Drawing.Size(75, 23);
+            this.DownloadBtn.Size = new System.Drawing.Size(67, 23);
             this.DownloadBtn.TabIndex = 2;
             this.DownloadBtn.Text = "Download";
             this.DownloadBtn.UseVisualStyleBackColor = true;
@@ -275,24 +292,71 @@
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             this.backgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_RunWorkerCompleted);
             // 
-            // StopBtn
+            // label7
             // 
-            this.StopBtn.Location = new System.Drawing.Point(741, 119);
-            this.StopBtn.Name = "StopBtn";
-            this.StopBtn.Size = new System.Drawing.Size(75, 23);
-            this.StopBtn.TabIndex = 5;
-            this.StopBtn.Text = "Stop";
-            this.StopBtn.UseVisualStyleBackColor = true;
-            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(22, 489);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(61, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Start Time :";
+            // 
+            // startTimelbl
+            // 
+            this.startTimelbl.AutoSize = true;
+            this.startTimelbl.Location = new System.Drawing.Point(83, 489);
+            this.startTimelbl.Name = "startTimelbl";
+            this.startTimelbl.Size = new System.Drawing.Size(0, 13);
+            this.startTimelbl.TabIndex = 0;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(217, 489);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(58, 13);
+            this.label9.TabIndex = 0;
+            this.label9.Text = "End Time :";
+            // 
+            // endTimelbl
+            // 
+            this.endTimelbl.AutoSize = true;
+            this.endTimelbl.Location = new System.Drawing.Point(275, 489);
+            this.endTimelbl.Name = "endTimelbl";
+            this.endTimelbl.Size = new System.Drawing.Size(0, 13);
+            this.endTimelbl.TabIndex = 0;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(423, 489);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(77, 13);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Elapsed Time :";
+            // 
+            // ElapsedTimeLbl
+            // 
+            this.ElapsedTimeLbl.AutoSize = true;
+            this.ElapsedTimeLbl.Location = new System.Drawing.Point(500, 489);
+            this.ElapsedTimeLbl.Name = "ElapsedTimeLbl";
+            this.ElapsedTimeLbl.Size = new System.Drawing.Size(0, 13);
+            this.ElapsedTimeLbl.TabIndex = 0;
             // 
             // FileSearcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(909, 514);
+            this.ClientSize = new System.Drawing.Size(909, 519);
             this.Controls.Add(this.DownloadBtn);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.ElapsedTimeLbl);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.endTimelbl);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.startTimelbl);
+            this.Controls.Add(this.label7);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FileSearcher";
             this.Text = "File Searcher";
@@ -301,6 +365,7 @@
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -331,6 +396,13 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.Button StopBtn;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label startTimelbl;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label endTimelbl;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label ElapsedTimeLbl;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog3;
     }
 }
 

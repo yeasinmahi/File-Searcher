@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -12,6 +13,7 @@ namespace File_Searcher
         private List<string> _fileNames = new List<string>();
         private readonly List<FileSearchHelper.FileInfo> _fileInfos = new List<FileSearchHelper.FileInfo>();
         private readonly FileSearchHelper _helper = new FileSearchHelper();
+        private Stopwatch _watch;
         public FileSearcher()
         {
             InitializeComponent();
@@ -115,7 +117,17 @@ namespace File_Searcher
         {
             try
             {
+                string sourcePath = SourceFolderTxtBox.Text;
+                string destinationPath = DestinationFolderTxtBox.Text;
+                string filePath = FileUploadTxtBox.Text;
+                _fileInfos.Clear();
+                if (!IsValid(sourcePath, destinationPath, filePath))
+                {
+                    return;
+                }
                 dataGridView.DataSource = null;
+                _watch = Stopwatch.StartNew();
+                startTimelbl.Text = DateTime.Now.ToLongTimeString();
                 backgroundWorker.RunWorkerAsync();
             }
             catch (Exception ex)
@@ -155,23 +167,28 @@ namespace File_Searcher
         {
             try
             {
-                if (_fileInfos.Count > 0)
+                if (folderBrowserDialog3.ShowDialog() == DialogResult.OK)
                 {
-                    var path = DestinationFolderTxtBox.Text;
-                    if (!string.IsNullOrWhiteSpace(path))
+                    if (_fileInfos.Count > 0)
                     {
-                        _ = _helper.WriteFile(path, _helper.ToLog(_fileInfos));
-                        ShowMessage("File downloaded successfully");
+                        var path = folderBrowserDialog3.SelectedPath;
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            _ = _helper.WriteFile(path, _helper.ToLog(_fileInfos));
+                            ShowMessage("File downloaded successfully");
+                        }
+                        else
+                        {
+                            ShowMessage("No destination path selected to download");
+                        }
                     }
                     else
                     {
-                        ShowMessage("No destination path selected to download");
+                        ShowMessage("No log found to download.");
                     }
                 }
-                else
-                {
-                    ShowMessage("No log found to download.");
-                }
+
+                
             }
             catch (Exception ex)
             {
@@ -182,23 +199,19 @@ namespace File_Searcher
 
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            
             var worker = sender as BackgroundWorker;
            
             try
             {
                 string sourcePath = SourceFolderTxtBox.Text;
                 string destinationPath = DestinationFolderTxtBox.Text;
-                string filePath = FileUploadTxtBox.Text;
-                _fileInfos.Clear();
-                if (!IsValid(sourcePath, destinationPath, filePath))
-                {
-                    return;
-                }
-
+                
                 int counter = 0;
                 
                 foreach (var fileName in _fileNames)
                 {
+                    Stopwatch watch = Stopwatch.StartNew();
                     if (worker?.CancellationPending == true)
                     {
                         e.Cancel = true;
@@ -233,7 +246,8 @@ namespace File_Searcher
                     {
 
                     }
-
+                    watch.Stop();
+                    fileInfo.TimeTaken = watch.Elapsed;
                     _fileInfos.Add(fileInfo);
                     counter++;
                     worker?.ReportProgress(counter * 1000 / _fileNames.Count);
@@ -257,6 +271,11 @@ namespace File_Searcher
         private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             dataGridView.DataSource = _fileInfos;
+            
+            _watch.Stop();
+            endTimelbl.Text = DateTime.Now.ToLongTimeString();
+            ElapsedTimeLbl.Text = _watch.Elapsed.Seconds+" Seconds";
+
             if (_fileInfos.Count > 0)
             {
                 ShowMessage("File search completed");
