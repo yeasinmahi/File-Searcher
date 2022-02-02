@@ -85,7 +85,8 @@ namespace File_Searcher
             {
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    var basePath = Directory.GetParent(Application.StartupPath)?.Parent?.FullName;
+                    //var basePath = Directory.GetParent(Application.StartupPath)?.Parent?.FullName;
+                    var basePath = Application.StartupPath;
                     if (basePath != null)
                     {
                         var destinationPath = saveFileDialog1.FileName;
