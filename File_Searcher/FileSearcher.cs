@@ -14,6 +14,7 @@ namespace File_Searcher
         private readonly List<FileSearchHelper.FileInfo> _fileInfos = new List<FileSearchHelper.FileInfo>();
         private readonly FileSearchHelper _helper = new FileSearchHelper();
         private Stopwatch _watch;
+        private int processCounter = 0;
         public FileSearcher()
         {
             InitializeComponent();
@@ -121,6 +122,7 @@ namespace File_Searcher
                 string destinationPath = DestinationFolderTxtBox.Text;
                 string filePath = FileUploadTxtBox.Text;
                 _fileInfos.Clear();
+                processCounter = 0;
                 if (!IsValid(sourcePath, destinationPath, filePath))
                 {
                     return;
@@ -262,7 +264,10 @@ namespace File_Searcher
 
         private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            processCounter++;
             progressBar1.Value = e.ProgressPercentage;
+            percentageLbl.Text = (e.ProgressPercentage/10.0) + "%";
+            totalProcessedLbl.Text = $@"{processCounter}/{_fileNames.Count}";
             //dataGridView.DataSource = _fileInfos;
             //dataGridView.Update();
             //dataGridView.Refresh();

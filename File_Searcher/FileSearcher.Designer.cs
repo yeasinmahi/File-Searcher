@@ -61,6 +61,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.ElapsedTimeLbl = new System.Windows.Forms.Label();
             this.folderBrowserDialog3 = new System.Windows.Forms.FolderBrowserDialog();
+            this.percentageLbl = new System.Windows.Forms.Label();
+            this.totalProcessedLbl = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -78,6 +80,8 @@
             this.groupBox1.Controls.Add(this.FileUploadTxtBox);
             this.groupBox1.Controls.Add(this.DestinationFolderTxtBox);
             this.groupBox1.Controls.Add(this.SourceFolderTxtBox);
+            this.groupBox1.Controls.Add(this.totalProcessedLbl);
+            this.groupBox1.Controls.Add(this.percentageLbl);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -93,7 +97,7 @@
             // 
             // StopBtn
             // 
-            this.StopBtn.Location = new System.Drawing.Point(741, 119);
+            this.StopBtn.Location = new System.Drawing.Point(812, 120);
             this.StopBtn.Name = "StopBtn";
             this.StopBtn.Size = new System.Drawing.Size(67, 23);
             this.StopBtn.TabIndex = 5;
@@ -103,10 +107,10 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(117, 120);
+            this.progressBar1.Location = new System.Drawing.Point(144, 120);
             this.progressBar1.Maximum = 1000;
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(601, 23);
+            this.progressBar1.Size = new System.Drawing.Size(574, 23);
             this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 4;
             // 
@@ -162,24 +166,24 @@
             // 
             // FileUploadTxtBox
             // 
-            this.FileUploadTxtBox.Location = new System.Drawing.Point(117, 80);
+            this.FileUploadTxtBox.Location = new System.Drawing.Point(144, 80);
             this.FileUploadTxtBox.Name = "FileUploadTxtBox";
-            this.FileUploadTxtBox.Size = new System.Drawing.Size(601, 20);
+            this.FileUploadTxtBox.Size = new System.Drawing.Size(574, 20);
             this.FileUploadTxtBox.TabIndex = 1;
             this.FileUploadTxtBox.TextChanged += new System.EventHandler(this.FileUploadTxtBox_TextChanged);
             // 
             // DestinationFolderTxtBox
             // 
-            this.DestinationFolderTxtBox.Location = new System.Drawing.Point(117, 54);
+            this.DestinationFolderTxtBox.Location = new System.Drawing.Point(144, 54);
             this.DestinationFolderTxtBox.Name = "DestinationFolderTxtBox";
-            this.DestinationFolderTxtBox.Size = new System.Drawing.Size(601, 20);
+            this.DestinationFolderTxtBox.Size = new System.Drawing.Size(574, 20);
             this.DestinationFolderTxtBox.TabIndex = 1;
             // 
             // SourceFolderTxtBox
             // 
-            this.SourceFolderTxtBox.Location = new System.Drawing.Point(117, 31);
+            this.SourceFolderTxtBox.Location = new System.Drawing.Point(144, 31);
             this.SourceFolderTxtBox.Name = "SourceFolderTxtBox";
-            this.SourceFolderTxtBox.Size = new System.Drawing.Size(601, 20);
+            this.SourceFolderTxtBox.Size = new System.Drawing.Size(574, 20);
             this.SourceFolderTxtBox.TabIndex = 1;
             // 
             // label4
@@ -343,6 +347,24 @@
             this.ElapsedTimeLbl.Size = new System.Drawing.Size(0, 13);
             this.ElapsedTimeLbl.TabIndex = 0;
             // 
+            // percentageLbl
+            // 
+            this.percentageLbl.AutoSize = true;
+            this.percentageLbl.Location = new System.Drawing.Point(738, 125);
+            this.percentageLbl.Name = "percentageLbl";
+            this.percentageLbl.Size = new System.Drawing.Size(15, 13);
+            this.percentageLbl.TabIndex = 0;
+            this.percentageLbl.Text = "%";
+            // 
+            // totalProcessedLbl
+            // 
+            this.totalProcessedLbl.AutoSize = true;
+            this.totalProcessedLbl.Location = new System.Drawing.Point(87, 126);
+            this.totalProcessedLbl.Name = "totalProcessedLbl";
+            this.totalProcessedLbl.Size = new System.Drawing.Size(24, 13);
+            this.totalProcessedLbl.TabIndex = 0;
+            this.totalProcessedLbl.Text = "0/0";
+            // 
             // FileSearcher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -403,6 +425,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label ElapsedTimeLbl;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog3;
+        private System.Windows.Forms.Label percentageLbl;
+        private System.Windows.Forms.Label totalProcessedLbl;
     }
 }
 
